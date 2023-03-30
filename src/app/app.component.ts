@@ -7,4 +7,21 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'mini-sql';
+  dbEditor: boolean = false;
+  miniSQLEditor: boolean = false;
+
+  showBDEditor() {
+    console.log("mostrando editor de base de datos.");
+  }
+
+
+  openDBEditor() {
+      this.dbEditor = true;
+      this.miniSQLEditor = false;
+  }
+
+  openMiniSQLEditor() {
+    this.dbEditor = false;
+    this.miniSQLEditor = true;
+  }
 }
