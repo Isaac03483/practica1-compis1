@@ -1,12 +1,15 @@
 {
   "name": "mini-sql",
   "version": "0.0.0",
+  "requires": true,
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "dbJison": "jison src/app/parser/dbParser.jison -o src/app/parser/dbParser.js",
+    "miniJison": "jison src/app/parser/miniSQLParser.jison -o src/app/parser/miniSQLParser.js"
   },
   "private": true,
   "dependencies": {

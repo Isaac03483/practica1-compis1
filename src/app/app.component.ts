@@ -23,5 +23,7 @@ export class AppComponent {
   openMiniSQLEditor() {
     this.dbEditor = false;
     this.miniSQLEditor = true;
+
+
   }
 }
