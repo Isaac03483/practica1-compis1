@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CodeModel} from "@ngstack/code-editor";
-
-
-declare var miniSQL: any;
+import {MiniSQLParser} from "../../parser/miniSQLParser";
 
 @Component({
   selector: 'app-mini-sql-editor',
@@ -28,7 +26,8 @@ export class MiniSqlEditorComponent implements OnInit{
 
   onClick() {
     try{
-      const value = miniSQL.parse(this.codeModel.value);
+      let miniSQLParser = new MiniSQLParser(this.codeModel.value);
+      miniSQLParser.parse();
       console.log("Imprimiendo algo luego de parsear");
     } catch (error){
       console.error(error);

@@ -1,4 +1,13 @@
+%{
+  let errorList = [];
 
+  function addError(element, error){
+    let symbol = "";
+
+    errorList.push(tmp);
+  }
+
+%}
 %lex
 
 lineTerminator      \r|\n|\r\n
@@ -88,7 +97,7 @@ main
 statements
   : statements statement                                                      {$$ = $1; $$.push($2);}
   | statement                                                                 {$$ = []; $$.push($1);}
-
+  | error
   ;
 
 statement

@@ -38,8 +38,8 @@ AND                 "AND"
 INPUT               "INPUT"
 PRINT               "PRINT"
 IF                  "IF"
-ELSEIF              "ELSEIF"
 ELSE                "ELSE"
+ELSEIF              "ELSEIF"
 END                 "END"
 THEN                "THEN"
 NOT                 "NOT"
@@ -105,12 +105,12 @@ NAME                ([a-zA-Z])[a-zA-Z0-9_]*
 {MINUS}             return "MINUS";
 {TIMES}             return "TIMES";
 {DIVIDE}            return "DIVIDE";
-{EQUALS}            return "EQUALS";
+{NOT_EQUALS}        return "NOT_EQUALS";
+{GREATER_EQUALS}    return "GREATER_EQUALS";
+{LESS_EQUALS}       return "LESS_EQUALS";
 {LESS_THAN}         return "LESS_THAN";
 {GREATER_THAN}      return "GREATER_THAN";
-{LESS_EQUALS}       return "LESS_EQUALS";
-{GREATER_EQUALS}    return "GREATER_EQUALS";
-{NOT_EQUALS}        return "NOT_EQUALS";
+{EQUALS}            return "EQUALS";
 {NOT}               return "NOT";
 {AND}               return "AND";
 {OR}                return "OR";
@@ -181,15 +181,14 @@ idAssignment
   ;
 
 ifStatement
-  : IF booleanValue THEN statements END IF
-  | IF booleanValue THEN statements ELSE statements END IF
-  | IF booleanValue THEN statements elseIfStatements END IF
-  | IF booleanValue THEN statements elseIfStatements ELSE statements END IF
+  : IF value THEN statements END IF
+  | IF value THEN statements elseIfStatements END IF
   ;
 
 elseIfStatements
-  : elseIfStatements ELSEIF booleanValue THEN statements
-  | ELSEIF booleanValue THEN statements
+  : ELSEIF value THEN statements elseIfStatements
+  | ELSEIF value THEN statements
+  | ELSE statements
   ;
 
 printStatement
@@ -202,13 +201,7 @@ content
   ;
 
 value
-  : number
-  | booleanValue
-  | TEXT_VALUE
-  ;
-
-booleanValue
-  : booleanValue OR e
+  : value OR e
   | e
   ;
 
@@ -223,24 +216,47 @@ f
   ;
 
 g
-  : number EQUALS number
-  | number NOT_EQUALS number
-  | number LESS_THAN number
-  | number LESS_EQUALS number
-  | number GREATER_THAN number
-  | number GREATER_EQUALS number
+  : g EQUALS h
+  | g NOT_EQUALS h
+  | g LESS_THAN h
+  | g GREATER_THAN h
+  | g LESS_EQUALS h
+  | g GREATER_EQUALS h
   | h
   ;
 
 h
-  : TRUE
+  : number
+  | TEXT_VALUE
+  | TRUE
   | FALSE
-  | LPAREN booleanValue RPAREN
+  | NAME
+  | LPAREN value RPAREN
   ;
+
 
 selectStatement
   : SELECT properties FROM NAME
+  | SELECT properties FROM NAME whereProd
+  | SELECT properties FROM NAME limitProd
+  | SELECT properties FROM NAME offSetProd
   ;
+
+whereProd
+  : WHERE value
+  | WHERE value limitProd
+  | WHERE value offSetProd
+  ;
+
+limitProd
+  : LIMIT number
+  | LIMIT number offSetProd
+  ;
+
+offSetProd
+  : OFFSET number
+  ;
+
 
 properties
   : TIMES
@@ -270,8 +286,8 @@ c
   ;
 
 d
-  : INTEGER                                                         {console.log("Encontre un Entero "+$1);}
-  | DOUBLE                                                          {console.log("Encontre un decimal "+$1);}
-  | ID
-  | LPAREN a RPAREN
+  : INTEGER                                                         {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.INTEGER, $1);}
+  | DOUBLE                                                          {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.DOUBLE, $1);}
+  | ID                                                              {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.ID, $1);}
+  | LPAREN a RPAREN                                                 {$$ = $2;}
   ;
