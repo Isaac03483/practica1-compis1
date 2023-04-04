@@ -144,12 +144,16 @@ statements
 
 assignment
   : DECLARE ids AS type SEMICOLON
+  {$$ = new yy.Declare();}
   | DECLARE ids AS type EQUALS value SEMICOLON
+  {}
   ;
 
 ids
   : ids COMMA ID
+  {$$= $1; $$.push($3);}
   | ID
+  {$$ = []; $$.push($1);}
   ;
 
 type

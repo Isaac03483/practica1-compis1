@@ -18,6 +18,7 @@ export class Declare extends Instruction{
   }
 
   execute(table: SymbolTable): any {
+
   }
 
 

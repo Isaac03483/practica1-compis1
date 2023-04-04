@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {CodeModel} from "@ngstack/code-editor";
 import {DbParser} from "../../parser/dbParser";
-import {Statement} from "../../dbModels/Statement";
 import {Table} from "../../dbModels/Table";
+import {DataBase} from "../../dbModels/DataBase";
 
 @Component({
   selector: 'app-bd-editor',
@@ -35,13 +35,9 @@ export class BdEditorComponent implements OnInit{
     let dbParser = new DbParser(this.codeModel.value);
     console.log("Creando nuevo Parser")
     dbParser.parse();
-    const statements = dbParser.getStatements();
-    if(!statements){
-      console.log("Las instrucciones no han sido declaradas.");
-      return;
-    }
-    statements.forEach((i: Statement) => {
-      console.log(i);
+    let dataBase = DataBase.getInstance();
+    dataBase.getTables().forEach((table:Table)=>{
+      console.log(table);
     })
     console.log("Imprimiendo algo luego de parsear");
   }

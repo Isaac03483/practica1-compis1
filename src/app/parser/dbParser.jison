@@ -1,12 +1,6 @@
 %{
   let errorList = [];
 
-  function addError(element, error){
-    let symbol = "";
-
-    errorList.push(tmp);
-  }
-
 %}
 %lex
 
@@ -90,19 +84,40 @@ NAME                ([a-zA-Z])[a-zA-Z0-9_]*
 %%
 
 main
-  : statements EOF                                                             {return $1;}
+  : statements EOF
   | EOF
   ;
 
 statements
-  : statements statement                                                      {$$ = $1; $$.push($2);}
-  | statement                                                                 {$$ = []; $$.push($1);}
+  : statements statement
+  | statement
   | error
   ;
 
 statement
-  : tableStatement SEMICOLON                                                  {$$ = new yy.Statement(yy.StatementType.TABLE, $1);}
-  | rowStatement SEMICOLON                                                    {$$ = new yy.Statement(yy.StatementType.ROW, $1);}
+  : tableStatement SEMICOLON
+  %{
+    try{
+      yy.dataBase.addTable($1);
+    }catch(error){
+      console.log(error);
+    }
+  %}
+  | rowStatement SEMICOLON
+  %{
+      let tables = yy.dataBase.getTables();
+      if(tables.length == 0){
+        console.log("Base de datos no definida");
+      } else {
+        let table = tables[tables.length-1];
+        try{
+          table.addRow(new yy.Row($1));
+        }catch(error){
+          console.log(error);
+        }
+      }
+
+  %}
   ;
 
 
