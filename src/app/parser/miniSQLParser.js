@@ -83,6 +83,15 @@ performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* actio
 
 var $0 = $$.length - 1;
 switch (yystate) {
+case 8:
+this.$ = new yy.Declare();
+break;
+case 10:
+this.$= $$[$0-2]; this.$.push($$[$0]);
+break;
+case 11:
+this.$ = []; this.$.push($$[$0]);
+break;
 case 74:
 this.$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.INTEGER, $$[$0]);
 break;

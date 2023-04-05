@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BdEditorComponent } from './components/bd-editor/bd-editor.component';
-import {CodeEditorComponent, CodeEditorModule} from "@ngstack/code-editor";
+import { CodeEditorModule} from "@ngstack/code-editor";
 import { MiniSqlEditorComponent } from './components/mini-sql-editor/mini-sql-editor.component';
 
 @NgModule({

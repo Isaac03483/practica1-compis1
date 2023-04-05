@@ -1,7 +1,10 @@
 %{
-  let errorList = [];
-
+  let lexicalErrors = [];
+  function pushErrors(message){
+    lexicalErrors.push(message);
+  }
 %}
+
 %lex
 
 lineTerminator      \r|\n|\r\n
@@ -74,8 +77,8 @@ NAME                ([a-zA-Z])[a-zA-Z0-9_]*
                         return "EOF";
                     %}
 .                   %{
-                        console.log('Error lexico '+yytext);
-                        return "INVALID";
+                      pushErrors("Error: LEXICO Linea: "+yylloc.first_line+" Columna: "+yylloc.first_column+ " el valor: "+yytext+" no forma parte del lenguaje");
+                      return "INVALID";
                     %}
 /lex
 
@@ -85,13 +88,20 @@ NAME                ([a-zA-Z])[a-zA-Z0-9_]*
 
 main
   : statements EOF
+  {yy.message.addMessages(lexicalErrors);lexicalErrors = [];}
   | EOF
+  {yy.message.addMessages(lexicalErrors);lexicalErrors = [];}
+
   ;
 
 statements
   : statements statement
   | statement
   | error
+  %{
+    const message = "Error: SINTÁCTICO linea: "+this._$.first_line+" columna: "+this._$.first_column+" Se esperaba algo más";
+    yy.message.addMessage(message);
+  %}
   ;
 
 statement
@@ -99,24 +109,32 @@ statement
   %{
     try{
       yy.dataBase.addTable($1);
+      const message = "Tabla creada con éxito.";
+      yy.message.addMessage(message);
     }catch(error){
-      console.log(error);
+      const message = "Error: SEMÁNTICO linea: "+this._$.first_line+" columna: "+this._$.first_column+" "+error;
+      yy.message.addMessage(message);
     }
   %}
   | rowStatement SEMICOLON
   %{
       let tables = yy.dataBase.getTables();
       if(tables.length == 0){
-        console.log("Base de datos no definida");
+        const message = "Error: SEMÁNTICO linea: "+this._$.first_line+" columna: "+this._$.first_column
+                 +" No se ha creado una base de datos anteriormente.";
+        yy.message.addMessage(message);
       } else {
         let table = tables[tables.length-1];
         try{
           table.addRow(new yy.Row($1));
+          const message = "Registro creado con éxito.";
+          yy.message.addMessage(message);
+
         }catch(error){
-          console.log(error);
+          const message = "Error: SEMÁNTICO linea: "+this._$.first_line+" columna: "+this._$.first_column+" "+error;
+          yy.message.addMessage(message);
         }
       }
-
   %}
   ;
 
