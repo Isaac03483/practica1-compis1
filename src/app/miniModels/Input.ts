@@ -20,7 +20,7 @@ export class Input extends Instruction{
 
     let variable = new Variable();
     variable.value = prompt(result.value);
-    variable.variableType = VariableType.TEXT_VALUE;
+    variable.variableType = VariableType.TEXT;
 
     return variable;
   }

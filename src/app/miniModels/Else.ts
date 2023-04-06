@@ -12,6 +12,9 @@ export class Else extends Instruction{
   }
 
   execute(symbolTable: SymbolTable): any {
+    this.instructions.forEach((it: Instruction)=>{
+      it.execute(symbolTable);
+    })
   }
 
 }

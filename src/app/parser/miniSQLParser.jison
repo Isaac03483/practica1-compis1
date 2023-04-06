@@ -128,25 +128,32 @@ NAME                ([a-zA-Z])[a-zA-Z0-9_]*
 
 main
   : assignments statements EOF
-  | statements EOF
-  | EOF
+  {$$ = $1; $$.push(...$2); return $$;}
+
   ;
 
 assignments
   : assignments assignment
+  {$$ = $1; $$.push($2);}
+
   | assignment
+  {$$ = []; $$.push($1);}
+
   ;
 
 statements
   : statements statement
-  | statement
+  {$$ = $1; $$.push($2);}
+  |
+  {$$ = [];}
   ;
 
 assignment
   : DECLARE ids AS type SEMICOLON
-  {$$ = new yy.Declare();}
+  {$$ = new yy.Declare(this._$.first_line,this._$.first_line,$2, $4);}
   | DECLARE ids AS type EQUALS value SEMICOLON
-  {}
+  {$$ = new yy.Declare(this._$.first_line,this._$.first_line,$2, $4,$6);}
+
   ;
 
 ids
@@ -158,83 +165,161 @@ ids
 
 type
   : INT
+  {$$ = yy.VariableType.INT;}
+
   | DECIMAL
+  {$$ = yy.VariableType.DECIMAL;}
+
   | TEXT
+  {$$ = yy.VariableType.TEXT;}
+
   | BOOLEAN
+  {$$ = yy.VariableType.BOOLEAN;}
   ;
 
 statement
   : setStatement SEMICOLON
+  {$$ = $1;}
+
   | ifStatement SEMICOLON
+  {$$ = $1;}
+
   | printStatement SEMICOLON
+  {$$ = $1;}
+
   | selectStatement SEMICOLON
+  {$$ = $1;}
+
   ;
 
 setStatement
   : SET idsAssignment
+  {$$ = new yy.Set(this._$.first_line, this._$.first_column, $2);}
+
+
   ;
 
 idsAssignment
   : idsAssignment COMMA idAssignment
+  {$$ = $1; $$.push($3);}
+
   | idAssignment
+  {$$ = []; $$.push($1);}
   ;
 
 idAssignment
   : ID EQUALS value
-  | ID EQUALS INPUT LPAREN TEXT_VALUE RPAREN
+  {$$ = new yy.Assignment(this._$.first_line, this._$.first_column, $1,$3);}
+
+  | ID EQUALS inputProd
+  {$$ = new yy.Assignment(this._$.first_line, this._$.first_column, $1,$3);}
+
+
+  ;
+
+inputProd
+  :INPUT LPAREN TEXT_VALUE RPAREN
+  {$$ = new yy.Input(this._$.first_line, this._$.first_column, new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.TEXT_VALUE, $3));}
   ;
 
 ifStatement
   : IF value THEN statements END IF
+  {$$ = new yy.If(this._$.first_line, this._$.first_column, $2,$4);}
+
   | IF value THEN statements elseIfStatements END IF
+  {$$ = new yy.If(this._$.first_line, this._$.first_column, $2,$4,$5);}
+
   ;
 
 elseIfStatements
   : ELSEIF value THEN statements elseIfStatements
+  {$$ = new yy.If(this._$.first_line, this._$.first_column, $2,$4,$5);}
+
   | ELSEIF value THEN statements
+  {$$ = new yy.If(this._$.first_line, this._$.first_column, $2,$4);}
+
   | ELSE statements
+  {$$ = new yy.Else(this._$.first_line, this._$.first_column, $2);}
+
   ;
 
-printStatement
+printprintStatement
   : PRINT LPAREN content RPAREN
+  {$$ = new yy.Print(this._$.first_line, this._$.first_column, $3);}
   ;
 
 content
   : content COMMA value
+  {$$ = $1; $$.push($2);}
+
   | value
+  {$$ = []; $$.push($1);}
   ;
 
 value
   : value OR e
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.OR, $1,$3);}
+
   | e
+  {$$ = $1;}
+
   ;
 
 e
   : e AND f
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.AND, $1,$3);}
+
   | f
+  {$$ = $1;}
+
   ;
 
 f
   : NOT g
+  {$$ = new yy.UnaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.NOT, $2);}
+
   | g
+  {$$ = $1;}
+
   ;
 
 g
   : g EQUALS h
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.EQUALS, $1,$3);}
+
   | g NOT_EQUALS h
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.NOT_EQUALS, $1,$3);}
+
   | g LESS_THAN h
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.LESS_THAN, $1,$3);}
+
   | g GREATER_THAN h
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.GREATER_THAN, $1,$3);}
+
   | g LESS_EQUALS h
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.LESS_EQUALS, $1,$3);}
+
   | g GREATER_EQUALS h
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.GREATER_EQUALS, $1,$3);}
+
   | h
+  {$$ = $1;}
+
   ;
 
 h
   : number
+  {$$ = $1;}
+
   | TEXT_VALUE
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.TEXT_VALUE, $1);}
+
   | TRUE
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.BOOLEAN, true);}
+
   | FALSE
-  | LPAREN value RPAREN
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.BOOLEAN, false);}
+
   ;
 
 
@@ -273,26 +358,47 @@ propertyNames
 
 number
   : number PLUS b
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.PLUS, $1,$3);}
+
   | number MINUS b
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.MINUS, $1,$3);}
+
   | b
+  {$$ = $1;}
+
   ;
 
 b
   : b TIMES c
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.TIMES, $1,$3);}
+
   | b DIVIDE c
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.DIVIDE, $1,$3);}
+
   | c
+  {$$ = $1;}
   ;
 
 c
   : MINUS d
+  {$$ = new yy.UnaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.MINUS, $2);}
+
   | d
+  {$$ = $1;}
   ;
 
 d
-  : INTEGER                                                         {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.INTEGER, $1);}
-  | DOUBLE                                                          {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.DOUBLE, $1);}
-  | ID                                                              {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.ID, $1);}
-  | LPAREN number RPAREN                                            {$$ = $2;}
+  : INTEGER
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.INTEGER, $1);}
+
+  | DOUBLE
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.DOUBLE, $1);}
+
+  | ID
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.ID, $1);}
+
+  | LPAREN value RPAREN
+  {$$ = $2;}
   ;
 
 whereValue

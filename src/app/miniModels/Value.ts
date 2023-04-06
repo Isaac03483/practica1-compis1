@@ -16,6 +16,7 @@ export class Value extends Instruction{
 
   execute(symbolTable: SymbolTable): Variable | undefined {
     let variable = new Variable();
+    console.log("Ejecutando operación Value.");
 
     switch (this.valueType){
       case ValueType.INTEGER:
@@ -32,7 +33,7 @@ export class Value extends Instruction{
         return variable;
       case ValueType.TEXT_VALUE:
         variable.value = String(this.value);
-        variable.variableType = VariableType.TEXT_VALUE;
+        variable.variableType = VariableType.TEXT;
         return variable;
       case ValueType.ID:
         const varInTable = symbolTable.findById(String(this.value));

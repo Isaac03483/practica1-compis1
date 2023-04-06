@@ -5,5 +5,5 @@ export class Variable{
 }
 
 export enum VariableType{
-  INT, DECIMAL, TEXT_VALUE, BOOLEAN
+  INT, DECIMAL, TEXT, BOOLEAN
 }

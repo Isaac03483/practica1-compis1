@@ -23,10 +23,12 @@ export class UnaryOperation extends Instruction{
     }
 
     let variable = new Variable();
+    console.log("Ejecutando operación unaria.");
+
     switch (this.operationType){
       case OperationType.MINUS:
 
-        if(right.variableType != VariableType.INT || right.variableType != VariableType.DECIMAL){
+        if(right.variableType != VariableType.INT && right.variableType != VariableType.DECIMAL){
           throw new Error("Solo se puede obtener el negativo de tipos INT y DECIMAL.");
         }
 

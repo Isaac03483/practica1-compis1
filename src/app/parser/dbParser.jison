@@ -249,7 +249,7 @@ c
 d
   : INTEGER                                                           {$$ = Number($1);}
   | DOUBLE                                                            {$$ = Number($1);}
-  | LPAREN a RPAREN                                                   {$$ = $2;}
+  | LPAREN number RPAREN                                                   {$$ = $2;}
   ;
 
 
