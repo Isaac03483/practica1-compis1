@@ -73,7 +73,6 @@ NAME                ([a-zA-Z])[a-zA-Z0-9_]*
 {STRING_VALUE}      {yytext = yytext.substr(1,yyleng-2);return "STRING_VALUE";}
 {NAME}              {return "NAME";}
 <<EOF>>             %{
-                        console.log('fin de archivo');
                         return "EOF";
                     %}
 .                   %{
@@ -99,7 +98,7 @@ statements
   | statement
   | error
   %{
-    const message = "Error: SINTÁCTICO linea: "+this._$.first_line+" columna: "+this._$.first_column+" Se esperaba algo más";
+    const message = "Error: SINTÁCTICO linea: "+this._$.first_line+" columna: "+this._$.first_column+" No se esperaba dicho valor";
     yy.message.addMessage(message);
   %}
   ;

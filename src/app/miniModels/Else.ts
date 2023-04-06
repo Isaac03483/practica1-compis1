@@ -11,12 +11,7 @@ export class Else extends Instruction{
     this.instructions = instructions;
   }
 
-  execute(table: SymbolTable): any {
-    this.instructions.forEach((it: Instruction) =>{
-      it.execute(table);
-    })
-
+  execute(symbolTable: SymbolTable): any {
   }
-
 
 }

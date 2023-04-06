@@ -1,72 +1,171 @@
 import {Instruction} from "./Instruction";
-import {OperationType} from "./OperationType";
 import {SymbolTable} from "./SymbolTable";
-import {Variable} from "./Variable";
-import {ValueType} from "./Value";
+import {OperationType} from "./OperationType";
+import {Variable, VariableType} from "./Variable";
 
 export class BinaryOperation extends Instruction{
 
   operationType: OperationType;
-  leftOperator: Instruction;
-  rightOperator: Instruction;
+  leftOperation: Instruction;
+  rightOperation: Instruction;
 
 
-  constructor(line: number, column: number, operationType: OperationType, leftOperator: Instruction, rightOperator: Instruction) {
+  constructor(line: number, column: number, operationType: OperationType, leftOperation: Instruction, rightOperation: Instruction) {
     super(line, column);
     this.operationType = operationType;
-    this.leftOperator = leftOperator;
-    this.rightOperator = rightOperator;
+    this.leftOperation = leftOperation;
+    this.rightOperation = rightOperation;
   }
 
-  execute(table: SymbolTable): Variable | undefined {
-    let leftOperator = this.leftOperator.execute(table);
-    let rightOperator = this.rightOperator.execute(table);
+  execute(symbolTable: SymbolTable): Variable | undefined {
+    const left = this.leftOperation.execute(symbolTable);
+    const right = this.rightOperation.execute(symbolTable);
 
-    if(leftOperator && rightOperator){
-      let variable = new Variable();
-      variable.type = leftOperator.operationType == ValueType.DECIMAL || rightOperator.operationType == ValueType.DECIMAL? ValueType.DECIMAL:ValueType.INT;
-      switch (this.operationType){
-        case OperationType.PLUS:
-          variable.value = Number(leftOperator.value) + Number(rightOperator.value);
-          return variable;
-        case OperationType.MINUS:
-          variable.value = Number(leftOperator.value) - Number(rightOperator.value);
-          return variable;
-        case OperationType.TIMES:
-          variable.value = Number(leftOperator.value) * Number(rightOperator.value);
-          return variable;
-        case OperationType.DIVIDE:
-          variable.type = ValueType.DECIMAL;
-          variable.value = Number(leftOperator.value) / Number(rightOperator.value);
-          return variable;
-        case OperationType.AND:
-          variable.value = Number(leftOperator.value) + Number(rightOperator.value);
-          return variable;
-        case OperationType.OR:
-          variable.value = Number(leftOperator.value) + Number(rightOperator.value);
-          return variable;
-        case OperationType.EQUALS:
-          variable.value = Number(leftOperator.value) + Number(rightOperator.value);
-          return variable;
-        case OperationType.NOT_EQUALS:
-          variable.value = Number(leftOperator.value) + Number(rightOperator.value);
-          return variable;
-        case OperationType.LESS_THAN:
-          variable.value = Number(leftOperator.value) + Number(rightOperator.value);
-          return variable;
-        case OperationType.GREATER_THAN:
-          variable.value = Number(leftOperator.value) + Number(rightOperator.value);
-          return variable;
-        case OperationType.LESS_EQUALS:
-          variable.value = Number(leftOperator.value) + Number(rightOperator.value);
-          return variable;
-        case OperationType.GREATER_EQUALS:
-          variable.value = Number(leftOperator.value) + Number(rightOperator.value);
-          return variable;
-      }
+    if(!left || !right){
+      throw new Error(`Algo pasó con las operaciones Linea: ${this.line} Columna: ${this.column}`);
+    }
+
+    let variable = new Variable();
+    switch (this.operationType){
+      case OperationType.PLUS:
+
+        if(left.variableType == VariableType.TEXT_VALUE || right.variableType == VariableType.TEXT_VALUE
+          || left.variableType == VariableType.BOOLEAN || right.variableType == VariableType.BOOLEAN){
+          throw new Error("Solo puede realizar operaciones aritmeticas entre tipos INT y DECIMAL.");
+        }
+
+        variable.variableType = (left.variableType == VariableType.DECIMAL || right.variableType == VariableType.DECIMAL)?
+          VariableType.DECIMAL : VariableType.INT;
+
+        variable.value = Number(left.value) + Number(right.value);
+        return variable;
+
+      case OperationType.MINUS:
+
+        if(left.variableType == VariableType.TEXT_VALUE || right.variableType == VariableType.TEXT_VALUE
+          || left.variableType == VariableType.BOOLEAN || right.variableType == VariableType.BOOLEAN){
+          throw new Error("Solo puede realizar operaciones aritmeticas entre tipos INT y DECIMAL.");
+        }
+
+        variable.variableType = (left.variableType == VariableType.DECIMAL || right.variableType == VariableType.DECIMAL)?
+          VariableType.DECIMAL : VariableType.INT;
+
+        variable.value = Number(left.value) - Number(right.value);
+        return variable;
+
+      case OperationType.TIMES:
+
+        if(left.variableType == VariableType.TEXT_VALUE || right.variableType == VariableType.TEXT_VALUE
+          || left.variableType == VariableType.BOOLEAN || right.variableType == VariableType.BOOLEAN){
+          throw new Error("Solo puede realizar operaciones aritmeticas entre tipos INT y DECIMAL.");
+        }
+
+        variable.variableType = (left.variableType == VariableType.DECIMAL || right.variableType == VariableType.DECIMAL)?
+          VariableType.DECIMAL : VariableType.INT;
+
+        variable.value = Number(left.value) * Number(right.value);
+        return variable;
+
+      case OperationType.DIVIDE:
+
+        if(left.variableType == VariableType.TEXT_VALUE || right.variableType == VariableType.TEXT_VALUE
+          || left.variableType == VariableType.BOOLEAN || right.variableType == VariableType.BOOLEAN){
+          throw new Error("Solo puede realizar operaciones aritmeticas entre tipos INT y DECIMAL.");
+        }
+
+        variable.variableType = VariableType.DECIMAL;
+
+        variable.value = Number(left.value) / Number(right.value);
+        return variable;
+
+      case OperationType.EQUALS:
+
+        variable.variableType = VariableType.BOOLEAN;
+
+        variable.value = left.value == right.value;
+
+        return variable;
+
+      case OperationType.NOT_EQUALS:
+        variable.variableType = VariableType.BOOLEAN;
+
+        variable.value = left.value == right.value;
+
+        return variable;
+
+      case OperationType.LESS_THAN:
+
+        if(left.variableType == VariableType.TEXT_VALUE || right.variableType == VariableType.TEXT_VALUE
+          || left.variableType == VariableType.BOOLEAN || right.variableType == VariableType.BOOLEAN){
+          throw new Error("Solo puede realizar la operación < entre tipos INT y DECIMAL.");
+        }
+
+        variable.variableType = VariableType.BOOLEAN;
+
+        variable.value = Number(left.value) < Number(right.value);
+
+        return variable;
+
+      case OperationType.GREATER_THAN:
+        if(left.variableType == VariableType.TEXT_VALUE || right.variableType == VariableType.TEXT_VALUE
+          || left.variableType == VariableType.BOOLEAN || right.variableType == VariableType.BOOLEAN){
+          throw new Error("Solo puede realizar la operación > entre tipos INT y DECIMAL.");
+        }
+
+        variable.variableType = VariableType.BOOLEAN;
+
+        variable.value = Number(left.value) > Number(right.value);
+
+        return variable;
+      case OperationType.LESS_EQUALS:
+        if(left.variableType == VariableType.TEXT_VALUE || right.variableType == VariableType.TEXT_VALUE
+          || left.variableType == VariableType.BOOLEAN || right.variableType == VariableType.BOOLEAN){
+          throw new Error("Solo puede realizar la operación <= entre tipos INT y DECIMAL.");
+        }
+
+        variable.variableType = VariableType.BOOLEAN;
+
+        variable.value = Number(left.value) <= Number(right.value);
+
+        return variable;
+      case OperationType.GREATER_EQUALS:
+        if(left.variableType == VariableType.TEXT_VALUE || right.variableType == VariableType.TEXT_VALUE
+          || left.variableType == VariableType.BOOLEAN || right.variableType == VariableType.BOOLEAN){
+          throw new Error("Solo puede realizar la operación >= entre tipos INT y DECIMAL.");
+        }
+
+        variable.variableType = VariableType.BOOLEAN;
+
+        variable.value = Number(left.value) >= Number(right.value);
+
+        return variable;
+      case OperationType.AND:
+
+        if(left.variableType != VariableType.BOOLEAN || right.variableType != VariableType.BOOLEAN){
+          throw new Error("Solo puede realizar la operación AND entre tipos BOOLEAN.");
+        }
+
+        variable.variableType = VariableType.BOOLEAN;
+
+        variable.value = Boolean(left.value) && Boolean(right.value);
+
+        return variable;
+      case OperationType.OR:
+
+        if(left.variableType != VariableType.BOOLEAN || right.variableType != VariableType.BOOLEAN){
+          throw new Error("Solo puede realizar la operación OR entre tipos BOOLEAN.");
+
+        }
+
+        variable.variableType = VariableType.BOOLEAN;
+
+        variable.value = Boolean(left.value) || Boolean(right.value);
+        return variable;
+
     }
 
     return undefined;
+
   }
 
 }

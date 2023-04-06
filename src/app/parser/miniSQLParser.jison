@@ -234,7 +234,6 @@ h
   | TEXT_VALUE
   | TRUE
   | FALSE
-  | NAME
   | LPAREN value RPAREN
   ;
 
@@ -247,9 +246,9 @@ selectStatement
   ;
 
 whereProd
-  : WHERE value
-  | WHERE value limitProd
-  | WHERE value offSetProd
+  : WHERE whereValue
+  | WHERE whereValue limitProd
+  | WHERE whereValue offSetProd
   ;
 
 limitProd
@@ -293,5 +292,39 @@ d
   : INTEGER                                                         {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.INTEGER, $1);}
   | DOUBLE                                                          {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.DOUBLE, $1);}
   | ID                                                              {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.ID, $1);}
-  | LPAREN a RPAREN                                                 {$$ = $2;}
+  | LPAREN number RPAREN                                            {$$ = $2;}
+  ;
+
+whereValue
+  : whereValue OR i
+  | i
+  ;
+
+i
+  : i AND j
+  | j
+  ;
+
+j
+  : NOT k
+  | k
+  ;
+
+l
+  : l EQUALS m
+  | l NOT_EQUALS m
+  | l LESS_THAN m
+  | l GREATER_THAN m
+  | l LESS_EQUALS m
+  | l GREATER_EQUALS m
+  | m
+  ;
+
+m
+  : number
+  | TEXT_VALUE
+  | TRUE
+  | FALSE
+  | NAME
+  | LPAREN whereValue RPAREN
   ;

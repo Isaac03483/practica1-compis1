@@ -5,20 +5,22 @@ export class SymbolTable extends Array<Variable>{
 
   constructor(parent?: SymbolTable) {
     super();
+
     if(parent){
-      this.push(...parent);
+      this.push(...parent)
     }
   }
 
-  add(variable: Variable) {
-    return this.push(variable);
+  addVariable(variable: Variable){
+    this.push(variable);
   }
 
-  getById(id: string) {
-    return this.find(v => v.id == id);
+  findById(id: string){
+    return this.find(i => i.id == id);
   }
 
-  contains(id: string) {
-    return this.some(v => v.id == id);
+  idInTable(id: string){
+    return this.some(i => i.id == id);
   }
+
 }

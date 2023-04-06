@@ -88,7 +88,7 @@ yy.message.addMessages(lexicalErrors);lexicalErrors = [];
 break;
 case 5:
 
-    const message = "Error: SINTÁCTICO linea: "+this._$.first_line+" columna: "+this._$.first_column+" Se esperaba algo más";
+    const message = "Error: SINTÁCTICO linea: "+this._$.first_line+" columna: "+this._$.first_column+" No se esperaba dicho valor";
     yy.message.addMessage(message);
   
 break;
@@ -889,7 +889,6 @@ break;
 case 29:return "NAME";
 break;
 case 30:
-                        console.log('fin de archivo');
                         return "EOF";
                     
 break;

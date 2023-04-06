@@ -1,7 +1,9 @@
-import {ValueType} from "./Value";
-
 export class Variable{
-  public id?: string;
-  public type!: ValueType;
-  public value?: any;
+  id?: string;
+  variableType!: VariableType;
+  value?: any;
+}
+
+export enum VariableType{
+  INT, DECIMAL, TEXT_VALUE, BOOLEAN
 }

@@ -1,11 +1,11 @@
 import {Instruction} from "./Instruction";
 import {SymbolTable} from "./SymbolTable";
 
-export class If extends Instruction{
+export class If  extends Instruction{
 
   operation: Instruction;
   trueBlock: Instruction[];
-  falseBlock: Instruction | undefined;
+  falseBlock?: Instruction;
 
 
   constructor(line: number, column: number, operation: Instruction, trueBlock: Instruction[], falseBlock?: Instruction) {
@@ -17,8 +17,7 @@ export class If extends Instruction{
     }
   }
 
-  execute(table: SymbolTable): any {
-
+  execute(symbolTable: SymbolTable): any {
   }
 
 }
