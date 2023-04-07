@@ -19,6 +19,14 @@ Palabras reservadas: INT, DECIMAL, BOOLEAN, TEXT, TRUE, FALSE, DECLARE, AS, SET,
 	INICIO_COMENTARIO: "--"
 */
 
+%{
+  let lexicalErrors = [];
+
+  function addLexicalError(errorMessage){
+    lexicalErrors.push(errorMessage);
+  }
+%}
+
 %lex
 
 lineTerminator      \r|\n|\r\n
@@ -118,7 +126,10 @@ NAME                ([a-zA-Z])[a-zA-Z0-9_]*
 {TEXT_VALUE}        {yytext = yytext.substr(1,yyleng-2);return "TEXT_VALUE";}
 {NAME}              {return "NAME";}
 <<EOF>>             return "EOF";
-.					          {console.error('Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column);}
+.					          %{
+                      console.log("Agregando error lexico.");
+                      addLexicalError("Error lexico. "+yytext+" No forma parte del lenguaje Linea: "+yylloc.first_line+" Columna: "+yylloc.first_column);
+                    %}
 
 /lex
 
@@ -128,16 +139,24 @@ NAME                ([a-zA-Z])[a-zA-Z0-9_]*
 
 main
   : assignments statements EOF
-  {$$ = $1; $$.push(...$2); return $$;}
-
+  %{
+    $$ = $1; $$.push(...$2);
+    yy.MiniError.addLexicalError(lexicalErrors);lexicalErrors = [];
+    return $$;
+  %}
+  | error
+  %{
+    yy.MiniError.addError("Error sintáctico. Token no esperado Linea: "+this._$.first_line+" Columna: "+this._$.first_column);
+    yy.MiniError.addLexicalError(lexicalErrors);lexicalErrors = [];
+  %}
   ;
 
 assignments
   : assignments assignment
   {$$ = $1; $$.push($2);}
 
-  | assignment
-  {$$ = []; $$.push($1);}
+  |
+  {$$ = [];}
 
   ;
 
@@ -243,14 +262,14 @@ elseIfStatements
 
   ;
 
-printprintStatement
+printStatement
   : PRINT LPAREN content RPAREN
   {$$ = new yy.Print(this._$.first_line, this._$.first_column, $3);}
   ;
 
 content
   : content COMMA value
-  {$$ = $1; $$.push($2);}
+  {$$ = $1; $$.push($3);}
 
   | value
   {$$ = []; $$.push($1);}

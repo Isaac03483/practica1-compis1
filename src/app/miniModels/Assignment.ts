@@ -1,6 +1,7 @@
 import {Instruction} from "./Instruction";
 import {SymbolTable} from "./SymbolTable";
 import {VariableType} from "./Variable";
+import {Input} from "./Input";
 
 export class Assignment extends Instruction{
 
@@ -29,9 +30,46 @@ export class Assignment extends Instruction{
     }
 
     //TODO: VERIFICAR EL VALOR DE INPUT, VERIFICAR SI LA CADENA ES UN NÚMERO, VERIFICAR QUE SEAN INT O DECIMAL
+    if(this.operation instanceof Input){
+      if(varInTable.variableType == VariableType.INT || varInTable.variableType == VariableType.DECIMAL){
+        if(Number.isNaN(Number(operation.value))){
+
+          throw new Error(`Error semántico. Se esperaba un valor ${varInTable.variableType} Linea: ${this.line} Columna: ${this.column}`);
+        }
+
+        varInTable.value = varInTable.variableType == VariableType.INT? Math.floor(Number(operation.value)) : Number(operation.value);
+        return;
+      }
+
+      if(varInTable.variableType == VariableType.BOOLEAN){
+
+        if(String(operation.value).toLowerCase() != "true" && String(operation.value).toLowerCase() != "false"){
+          throw new Error(`Error semántico. Se esperaba un valor booleano Linea: ${this.line} Columna: ${this.column}`);
+        }
+
+        varInTable.value = Boolean(String(operation.value).toLowerCase());
+
+        return;
+      }
+
+      varInTable.value = operation.value;
+
+    }
+
+    if(varInTable.variableType == VariableType.INT || varInTable.variableType == VariableType.DECIMAL){
+      if(operation.variableType != VariableType.INT && operation.variableType != VariableType.DECIMAL){
+        console.log("Entrando en error int y decimal");
+
+        throw new Error(`Error semántico. Se esperaba un valor ${varInTable.variableType} Linea: ${this.line} Columna: ${this.column}`);
+      }
+
+      varInTable.value = varInTable.variableType == VariableType.INT? Math.floor(Number(operation.value)) : Number(operation.value);
+      return;
+    }
+
 
     if(varInTable.variableType != operation.variableType){
-      throw new Error(`Error semántico. Los tipos de variables no coinciden Linea: ${this.line} Columna: ${this.column}`);
+      throw new Error(`Error semántico. Se esperaba un valor ${varInTable.variableType} Linea: ${this.line} Columna: ${this.column}`);
     }
 
     varInTable.value = operation.value;

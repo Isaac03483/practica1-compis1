@@ -21,7 +21,7 @@ export class Print extends Instruction{
         throw new Error(`Error Semántico. No se pudo ejecutar la operación. Linea: ${this.line} Columna: ${this.column}`);
       }
 
-      printContent.concat(operation.value);
+      printContent+= operation.value;
 
     });
 

@@ -32,9 +32,10 @@ export class UnaryOperation extends Instruction{
           throw new Error("Solo se puede obtener el negativo de tipos INT y DECIMAL.");
         }
 
-        variable.variableType = right.variableType == VariableType.INT? VariableType.INT: VariableType.DECIMAL;
-        variable.value = -1* Number(right.value);
+        variable.variableType = right.variableType;
+        variable.value = -1 * Number(right.value);
         return variable;
+
       case OperationType.NOT:
         if(right.variableType != VariableType.BOOLEAN){
           throw new Error("Solo se puede obtener la negación de tipos BOOLEAN.");
@@ -42,6 +43,8 @@ export class UnaryOperation extends Instruction{
 
         variable.variableType = VariableType.BOOLEAN;
         variable.value = !Boolean(right.value);
+
+        return variable;
 
     }
 

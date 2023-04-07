@@ -16,7 +16,6 @@ export class Value extends Instruction{
 
   execute(symbolTable: SymbolTable): Variable | undefined {
     let variable = new Variable();
-    console.log("Ejecutando operación Value.");
 
     switch (this.valueType){
       case ValueType.INTEGER:

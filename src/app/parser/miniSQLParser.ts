@@ -12,6 +12,7 @@ import {Assignment} from "../miniModels/Assignment";
 import {Instruction} from "../miniModels/Instruction";
 import {OperationType} from "../miniModels/OperationType";
 import {SymbolTable} from "../miniModels/SymbolTable";
+import {MiniError} from "../miniModels/MiniError";
 
 declare var miniSQLParser: any;
 export class MiniSQLParser{
@@ -21,6 +22,7 @@ export class MiniSQLParser{
 
   constructor(source: string) {
     this.source = source;
+    MiniError.getInstance().clear();
     miniSQLParser.yy.Value = Value;
     miniSQLParser.yy.ValueType = ValueType;
     miniSQLParser.yy.VariableType = VariableType;
@@ -34,21 +36,34 @@ export class MiniSQLParser{
     miniSQLParser.yy.Set = Set;
     miniSQLParser.yy.Print = Print;
     miniSQLParser.yy.Assignment = Assignment;
+    miniSQLParser.yy.MiniError = MiniError.getInstance();
 
   }
 
-  parse(){
+  parse(): SymbolTable|undefined{
     try{
       const instructions = miniSQLParser.parse(this.source);
       let symbolTable = new SymbolTable();
-      instructions.forEach((it: Instruction)=>{
-        it.execute(symbolTable);
-      });
 
-      console.log(symbolTable);
+      if(MiniError.getInstance().errors.length > 0){
+        return undefined;
+      }
+
+      instructions.forEach((it: Instruction)=>{
+        if(MiniError.getInstance().errors.length == 0){
+          try{
+            it.execute(symbolTable);
+          }catch (error){
+            MiniError.getInstance().addError(String(error));
+          }
+        }
+      });
+      return symbolTable;
     } catch (error){
       console.log(error);
       console.log("Algo salió mal a la hora de parsear en miniSQLParser");
     }
+
+    return undefined;
   }
 }

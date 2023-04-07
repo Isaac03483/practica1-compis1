@@ -20,7 +20,6 @@ export class If  extends Instruction{
   }
 
   execute(symbolTable: SymbolTable): any {
-    console.log("Ejecutando operación If.");
 
     const operation = this.operation.execute(symbolTable);
 
@@ -32,8 +31,6 @@ export class If  extends Instruction{
       throw new Error("La sentencia if debe contener un valor booleano.");
     }
 
-    console.log(operation.variableType);
-    console.log(operation.value);
     if(operation.value == true){
       this.trueBlock.forEach((it: Instruction)=>{
         it.execute(symbolTable);

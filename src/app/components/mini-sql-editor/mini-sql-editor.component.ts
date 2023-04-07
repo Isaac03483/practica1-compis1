@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {CodeModel} from "@ngstack/code-editor";
 import {MiniSQLParser} from "../../parser/miniSQLParser";
+import {SymbolTable} from "../../miniModels/SymbolTable";
+import {VariableType} from "../../miniModels/Variable";
+import {MiniError} from "../../miniModels/MiniError";
 
 @Component({
   selector: 'app-mini-sql-editor',
@@ -10,6 +13,7 @@ import {MiniSQLParser} from "../../parser/miniSQLParser";
 export class MiniSqlEditorComponent implements OnInit{
 
   theme = 'vs-white';
+  symbolTable?: SymbolTable;
 
   codeModel: CodeModel = {
     language: 'json',
@@ -27,7 +31,7 @@ export class MiniSqlEditorComponent implements OnInit{
   onClick() {
     try{
       let miniSQLParser = new MiniSQLParser(this.codeModel.value);
-      miniSQLParser.parse();
+      this.symbolTable = miniSQLParser.parse();
       console.log("Imprimiendo algo luego de parsear");
     } catch (error){
       console.error(error);
@@ -37,4 +41,7 @@ export class MiniSqlEditorComponent implements OnInit{
 
   ngOnInit(): void {
   }
+
+  protected readonly VariableType = VariableType;
+  protected readonly MiniError = MiniError;
 }

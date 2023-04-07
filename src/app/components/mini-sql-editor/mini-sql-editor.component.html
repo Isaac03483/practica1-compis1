@@ -13,3 +13,24 @@
 <div class="d-flex justify-content-end">
   <button class="btn btn-primary m-1" (click)="onClick()">Compilar</button>
 </div>
+
+<div *ngIf="symbolTable && MiniError.getInstance().errors.length == 0">
+  <table class="table">
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Tipo</th>
+      <th scope="col">Valor</th>
+    </tr>
+    <tr *ngFor="let symbol of symbolTable">
+      <th scope="row">{{symbol.id}}</th>
+      <td>{{VariableType[symbol.variableType]}}</td>
+      <td>{{symbol.value}}</td>
+    </tr>
+  </table>
+</div>
+
+<div *ngIf="MiniError.getInstance().errors.length > 0">
+  <div *ngFor="let error of MiniError.getInstance().errors">
+    <h5>{{error}}</h5>
+  </div>
+</div>
