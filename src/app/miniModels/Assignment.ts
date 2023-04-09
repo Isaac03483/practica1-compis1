@@ -20,13 +20,13 @@ export class Assignment extends Instruction{
     const varInTable = symbolTable.findById(this.id);
 
     if(!varInTable){
-      throw new Error(`Error semántico. No se ha encontrado: ${this.id} en la tabla de simbolos Linea: ${this.line} Columna: ${this.column}`);
+      throw new Error(` semántico. No se ha encontrado: ${this.id} en la tabla de simbolos. Linea: ${this.line} Columna: ${this.column}`);
     }
 
     const operation = this.operation.execute(symbolTable);
 
     if(!operation){
-      throw new Error(`Error semántico. Algo salió mal con la operacion Linea: ${this.line} Columna: ${this.column}`);
+      throw new Error(` semántico. Algo salió mal con la operacion. Linea: ${this.line} Columna: ${this.column}`);
     }
 
     //TODO: VERIFICAR EL VALOR DE INPUT, VERIFICAR SI LA CADENA ES UN NÚMERO, VERIFICAR QUE SEAN INT O DECIMAL
@@ -34,7 +34,7 @@ export class Assignment extends Instruction{
       if(varInTable.variableType == VariableType.INT || varInTable.variableType == VariableType.DECIMAL){
         if(Number.isNaN(Number(operation.value))){
 
-          throw new Error(`Error semántico. Se esperaba un valor ${varInTable.variableType} Linea: ${this.line} Columna: ${this.column}`);
+          throw new Error(` semántico. Se esperaba un valor ${VariableType[varInTable.variableType]}. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         varInTable.value = varInTable.variableType == VariableType.INT? Math.floor(Number(operation.value)) : Number(operation.value);
@@ -43,8 +43,8 @@ export class Assignment extends Instruction{
 
       if(varInTable.variableType == VariableType.BOOLEAN){
 
-        if(String(operation.value).toLowerCase() != "true" && String(operation.value).toLowerCase() != "false"){
-          throw new Error(`Error semántico. Se esperaba un valor booleano Linea: ${this.line} Columna: ${this.column}`);
+        if(String(operation.value).trim().toLowerCase() != "true" && String(operation.value).trim().toLowerCase() != "false"){
+          throw new Error(` semántico. Se esperaba un valor booleano. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         varInTable.value = Boolean(String(operation.value).toLowerCase());
@@ -58,9 +58,8 @@ export class Assignment extends Instruction{
 
     if(varInTable.variableType == VariableType.INT || varInTable.variableType == VariableType.DECIMAL){
       if(operation.variableType != VariableType.INT && operation.variableType != VariableType.DECIMAL){
-        console.log("Entrando en error int y decimal");
 
-        throw new Error(`Error semántico. Se esperaba un valor ${varInTable.variableType} Linea: ${this.line} Columna: ${this.column}`);
+        throw new Error(` semántico. Se esperaba un valor ${VariableType[varInTable.variableType]}. Linea: ${this.line} Columna: ${this.column}`);
       }
 
       varInTable.value = varInTable.variableType == VariableType.INT? Math.floor(Number(operation.value)) : Number(operation.value);
@@ -69,7 +68,7 @@ export class Assignment extends Instruction{
 
 
     if(varInTable.variableType != operation.variableType){
-      throw new Error(`Error semántico. Se esperaba un valor ${varInTable.variableType} Linea: ${this.line} Columna: ${this.column}`);
+      throw new Error(` semántico. Se esperaba un valor ${VariableType[varInTable.variableType]}. Linea: ${this.line} Columna: ${this.column}`);
     }
 
     varInTable.value = operation.value;

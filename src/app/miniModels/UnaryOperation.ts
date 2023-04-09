@@ -19,17 +19,16 @@ export class UnaryOperation extends Instruction{
     const right = this.rightOperation.execute(symbolTable);
 
     if(!right){
-      throw new  Error("No se pudo obtener el resultado de la operación");
+      throw new  Error(` semántico. No se pudo obtener el resultado de la operación. Linea: ${this.line} Columna: ${this.column}`);
     }
 
     let variable = new Variable();
-    console.log("Ejecutando operación unaria.");
 
     switch (this.operationType){
       case OperationType.MINUS:
 
         if(right.variableType != VariableType.INT && right.variableType != VariableType.DECIMAL){
-          throw new Error("Solo se puede obtener el negativo de tipos INT y DECIMAL.");
+          throw new Error(` semántico. Solo se puede obtener el negativo de tipos INT y DECIMAL. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         variable.variableType = right.variableType;
@@ -38,7 +37,7 @@ export class UnaryOperation extends Instruction{
 
       case OperationType.NOT:
         if(right.variableType != VariableType.BOOLEAN){
-          throw new Error("Solo se puede obtener la negación de tipos BOOLEAN.");
+          throw new Error(` semántico. Solo se puede obtener la negación de tipos BOOLEAN. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         variable.variableType = VariableType.BOOLEAN;

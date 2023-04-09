@@ -128,7 +128,7 @@ NAME                ([a-zA-Z])[a-zA-Z0-9_]*
 <<EOF>>             return "EOF";
 .					          %{
                       console.log("Agregando error lexico.");
-                      addLexicalError("Error lexico. "+yytext+" No forma parte del lenguaje Linea: "+yylloc.first_line+" Columna: "+yylloc.first_column);
+                      addLexicalError("Error: léxico. "+yytext+" No forma parte del lenguaje Linea: "+yylloc.first_line+" Columna: "+yylloc.first_column);
                     %}
 
 /lex
@@ -146,7 +146,7 @@ main
   %}
   | error
   %{
-    yy.MiniError.addError("Error sintáctico. Token no esperado Linea: "+this._$.first_line+" Columna: "+this._$.first_column);
+    yy.MiniError.addError("Error: sintáctico. Token no esperado Linea: "+this._$.first_line+" Columna: "+this._$.first_column);
     yy.MiniError.addLexicalError(lexicalErrors);lexicalErrors = [];
   %}
   ;
@@ -169,9 +169,9 @@ statements
 
 assignment
   : DECLARE ids AS type SEMICOLON
-  {$$ = new yy.Declare(this._$.first_line,this._$.first_line,$2, $4);}
+  {$$ = new yy.Declare(this._$.first_line,this._$.first_column,$2, $4);}
   | DECLARE ids AS type EQUALS value SEMICOLON
-  {$$ = new yy.Declare(this._$.first_line,this._$.first_line,$2, $4,$6);}
+  {$$ = new yy.Declare(this._$.first_line,this._$.first_column,$2, $4,$6);}
 
   ;
 
@@ -344,9 +344,16 @@ h
 
 selectStatement
   : SELECT properties FROM NAME
+  {$$ = new yy.Select();}
   | SELECT properties FROM NAME whereProd
+  {$$ = new yy.Select();}
+
   | SELECT properties FROM NAME limitProd
+  {$$ = new yy.Select();}
+
   | SELECT properties FROM NAME offSetProd
+  {$$ = new yy.Select();}
+
   ;
 
 whereProd
@@ -422,34 +429,113 @@ d
 
 whereValue
   : whereValue OR i
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.OR, $1,$3);}
+
   | i
+  {$$=$1;}
   ;
 
 i
   : i AND j
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.AND, $1,$3);}
+
   | j
+  {$$=$1;}
+
   ;
 
 j
   : NOT k
+  {$$ = new yy.UnaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.NOT, $2);}
+
   | k
+  {$$=$1;}
   ;
 
-l
-  : l EQUALS m
-  | l NOT_EQUALS m
-  | l LESS_THAN m
-  | l GREATER_THAN m
-  | l LESS_EQUALS m
-  | l GREATER_EQUALS m
+k
+  : k EQUALS m
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.EQUALS, $1,$3);}
+
+  | k NOT_EQUALS m
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.NOT_EQUALS, $1,$3);}
+
+  | k LESS_THAN m
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.LESS_THAN, $1,$3);}
+
+  | k GREATER_THAN m
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.GREATER_THAN, $1,$3);}
+
+  | k LESS_EQUALS m
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.LESS_EQUALS, $1,$3);}
+
+  | k GREATER_EQUALS m
   | m
+  {$$=$1;}
   ;
 
 m
-  : number
+  : whereNumber
+  {$$ = $1;}
+
   | TEXT_VALUE
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.TEXT_VALUE, $1);}
+
   | TRUE
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.BOOLEAN, true);}
+
   | FALSE
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.BOOLEAN, false);}
   | NAME
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.TEXT_VALUE, $1);}
+
+  ;
+
+whereNumber
+  : whereNumber PLUS x
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.PLUS, $1,$3);}
+
+
+  | whereNumber MINUS x
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.MINUS, $1,$3);}
+
+
+  | x
+  {$$=$1;}
+
+  ;
+
+x
+  : x TIMES y
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.TIMES, $1,$3);}
+
+
+  | x DIVIDE y
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.DIVIDE, $1,$3);}
+
+
+  | y
+  {$$=$1;}
+  ;
+
+y
+  : MINUS z
+  {$$ = new yy.UnaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.MINUS, $2);}
+
+
+  | z
+  {$$ = $1;}
+  ;
+
+z
+  : INTEGER
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.INTEGER, $1);}
+
+  | DOUBLE
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.DOUBLE, $1);}
+
+  | ID
+  {$$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.ID, $1);}
+
   | LPAREN whereValue RPAREN
+  {$$ = $2;}
   ;

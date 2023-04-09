@@ -13,11 +13,13 @@ import {Instruction} from "../miniModels/Instruction";
 import {OperationType} from "../miniModels/OperationType";
 import {SymbolTable} from "../miniModels/SymbolTable";
 import {MiniError} from "../miniModels/MiniError";
+import {Select} from "../miniModels/Select";
 
 declare var miniSQLParser: any;
 export class MiniSQLParser{
 
   private source: string;
+  data: any;
 
 
   constructor(source: string) {
@@ -34,6 +36,7 @@ export class MiniSQLParser{
     miniSQLParser.yy.BinaryOperation = BinaryOperation;
     miniSQLParser.yy.OperationType = OperationType;
     miniSQLParser.yy.Set = Set;
+    miniSQLParser.yy.Select = Select;
     miniSQLParser.yy.Print = Print;
     miniSQLParser.yy.Assignment = Assignment;
     miniSQLParser.yy.MiniError = MiniError.getInstance();
@@ -43,6 +46,7 @@ export class MiniSQLParser{
   parse(): SymbolTable|undefined{
     try{
       const instructions = miniSQLParser.parse(this.source);
+      this.data = instructions;
       let symbolTable = new SymbolTable();
 
       if(MiniError.getInstance().errors.length > 0){

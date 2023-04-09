@@ -2,8 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {CodeModel} from "@ngstack/code-editor";
 import {MiniSQLParser} from "../../parser/miniSQLParser";
 import {SymbolTable} from "../../miniModels/SymbolTable";
-import {VariableType} from "../../miniModels/Variable";
 import {MiniError} from "../../miniModels/MiniError";
+import {VariableType} from "../../miniModels/Variable";
+import * as d3 from 'd3';
 
 @Component({
   selector: 'app-mini-sql-editor',
@@ -12,8 +13,11 @@ import {MiniError} from "../../miniModels/MiniError";
 })
 export class MiniSqlEditorComponent implements OnInit{
 
+  protected readonly MiniError = MiniError;
+  protected readonly VariableType = VariableType;
   theme = 'vs-white';
   symbolTable?: SymbolTable;
+  data: any;
 
   codeModel: CodeModel = {
     language: 'json',
@@ -32,7 +36,10 @@ export class MiniSqlEditorComponent implements OnInit{
     try{
       let miniSQLParser = new MiniSQLParser(this.codeModel.value);
       this.symbolTable = miniSQLParser.parse();
-      console.log("Imprimiendo algo luego de parsear");
+      this.data = miniSQLParser.data;
+      console.log("AST");
+      console.log(this.data);
+
     } catch (error){
       console.error(error);
       console.log("Error al compilar la información.")
@@ -42,6 +49,6 @@ export class MiniSqlEditorComponent implements OnInit{
   ngOnInit(): void {
   }
 
-  protected readonly VariableType = VariableType;
-  protected readonly MiniError = MiniError;
+
+
 }

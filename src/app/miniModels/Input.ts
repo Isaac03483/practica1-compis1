@@ -15,11 +15,12 @@ export class Input extends Instruction{
 
     const result = this.value.execute(symbolTable);
     if(!result){
-      throw new Error("Algo malo pasó con el valor de la instrucción.");
+      throw new Error(` semántico. Algo malo pasó con el valor de la instrucción. Linea: ${this.line} Columna: ${this.column}`);
     }
 
     let variable = new Variable();
     variable.value = prompt(result.value);
+    console.log(result.value +""+variable.value);
     variable.variableType = VariableType.TEXT;
 
     return variable;

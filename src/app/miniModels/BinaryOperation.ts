@@ -22,7 +22,7 @@ export class BinaryOperation extends Instruction{
     const leftOperator = this.leftOperation.execute(symbolTable);
     const rightOperator = this.rightOperation.execute(symbolTable);
     if(!leftOperator || !rightOperator){
-      throw new Error(`Algo pasó con las operaciones Linea: ${this.line} Columna: ${this.column}`);
+      throw new Error(`semántico. Algo pasó con las operaciones Linea: ${this.line} Columna: ${this.column}`);
     }
 
     let variable = new Variable();
@@ -32,7 +32,7 @@ export class BinaryOperation extends Instruction{
 
         if(leftOperator.variableType == VariableType.TEXT || rightOperator.variableType == VariableType.TEXT
           || leftOperator.variableType == VariableType.BOOLEAN || rightOperator.variableType == VariableType.BOOLEAN){
-          throw new Error("Solo puede realizar operaciones aritmeticas entre tipos INT y DECIMAL.");
+          throw new Error(` semántico. Solo puede realizar operaciones aritmeticas entre tipos INT y DECIMAL. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         variable.variableType = (leftOperator.variableType == VariableType.DECIMAL || rightOperator.variableType == VariableType.DECIMAL)?
@@ -45,7 +45,7 @@ export class BinaryOperation extends Instruction{
 
         if(leftOperator.variableType == VariableType.TEXT || rightOperator.variableType == VariableType.TEXT
           || leftOperator.variableType == VariableType.BOOLEAN || rightOperator.variableType == VariableType.BOOLEAN){
-          throw new Error("Solo puede realizar operaciones aritmeticas entre tipos INT y DECIMAL.");
+          throw new Error(` semántico. Solo puede realizar operaciones aritmeticas entre tipos INT y DECIMAL. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         variable.variableType = (leftOperator.variableType == VariableType.DECIMAL || rightOperator.variableType == VariableType.DECIMAL)?
@@ -58,7 +58,7 @@ export class BinaryOperation extends Instruction{
 
         if(leftOperator.variableType == VariableType.TEXT || rightOperator.variableType == VariableType.TEXT
           || leftOperator.variableType == VariableType.BOOLEAN || rightOperator.variableType == VariableType.BOOLEAN){
-          throw new Error("Solo puede realizar operaciones aritmeticas entre tipos INT y DECIMAL.");
+          throw new Error(` semántico. Solo puede realizar operaciones aritmeticas entre tipos INT y DECIMAL. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         variable.variableType = (leftOperator.variableType == VariableType.DECIMAL || rightOperator.variableType == VariableType.DECIMAL)?
@@ -71,7 +71,7 @@ export class BinaryOperation extends Instruction{
 
         if(leftOperator.variableType == VariableType.TEXT || rightOperator.variableType == VariableType.TEXT
           || leftOperator.variableType == VariableType.BOOLEAN || rightOperator.variableType == VariableType.BOOLEAN){
-          throw new Error("Solo puede realizar operaciones aritmeticas entre tipos INT y DECIMAL.");
+          throw new Error(` semántico. Solo puede realizar operaciones aritmeticas entre tipos INT y DECIMAL. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         variable.variableType = VariableType.DECIMAL;
@@ -98,7 +98,7 @@ export class BinaryOperation extends Instruction{
 
         if(leftOperator.variableType == VariableType.TEXT || rightOperator.variableType == VariableType.TEXT
           || leftOperator.variableType == VariableType.BOOLEAN || rightOperator.variableType == VariableType.BOOLEAN){
-          throw new Error("Solo puede realizar la operación < entre tipos INT y DECIMAL.");
+          throw new Error(` semántico.  Solo puede realizar la operación < entre tipos INT y DECIMAL. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         variable.variableType = VariableType.BOOLEAN;
@@ -110,7 +110,7 @@ export class BinaryOperation extends Instruction{
       case OperationType.GREATER_THAN:
         if(leftOperator.variableType == VariableType.TEXT || rightOperator.variableType == VariableType.TEXT
           || leftOperator.variableType == VariableType.BOOLEAN || rightOperator.variableType == VariableType.BOOLEAN){
-          throw new Error("Solo puede realizar la operación > entre tipos INT y DECIMAL.");
+          throw new Error(` semántico. Solo puede realizar la operación > entre tipos INT y DECIMAL. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         variable.variableType = VariableType.BOOLEAN;
@@ -121,7 +121,7 @@ export class BinaryOperation extends Instruction{
       case OperationType.LESS_EQUALS:
         if(leftOperator.variableType == VariableType.TEXT || rightOperator.variableType == VariableType.TEXT
           || leftOperator.variableType == VariableType.BOOLEAN || rightOperator.variableType == VariableType.BOOLEAN){
-          throw new Error("Solo puede realizar la operación <= entre tipos INT y DECIMAL.");
+          throw new Error(` semántico. Solo puede realizar la operación <= entre tipos INT y DECIMAL. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         variable.variableType = VariableType.BOOLEAN;
@@ -132,7 +132,7 @@ export class BinaryOperation extends Instruction{
       case OperationType.GREATER_EQUALS:
         if(leftOperator.variableType == VariableType.TEXT || rightOperator.variableType == VariableType.TEXT
           || leftOperator.variableType == VariableType.BOOLEAN || rightOperator.variableType == VariableType.BOOLEAN){
-          throw new Error("Solo puede realizar la operación >= entre tipos INT y DECIMAL.");
+          throw new Error(` semántico. Solo puede realizar la operación >= entre tipos INT y DECIMAL. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         variable.variableType = VariableType.BOOLEAN;
@@ -143,7 +143,7 @@ export class BinaryOperation extends Instruction{
       case OperationType.AND:
 
         if(leftOperator.variableType != VariableType.BOOLEAN || rightOperator.variableType != VariableType.BOOLEAN){
-          throw new Error("Solo puede realizar la operación AND entre tipos BOOLEAN.");
+          throw new Error(` semántico. Solo puede realizar la operación AND entre tipos BOOLEAN. Linea: ${this.line} Columna: ${this.column}`);
         }
 
         variable.variableType = VariableType.BOOLEAN;
@@ -154,7 +154,7 @@ export class BinaryOperation extends Instruction{
       case OperationType.OR:
 
         if(leftOperator.variableType != VariableType.BOOLEAN || rightOperator.variableType != VariableType.BOOLEAN){
-          throw new Error("Solo puede realizar la operación OR entre tipos BOOLEAN.");
+          throw new Error(` semántico. Solo puede realizar la operación OR entre tipos BOOLEAN. Linea: ${this.line} Columna: ${this.column}`);
 
         }
 

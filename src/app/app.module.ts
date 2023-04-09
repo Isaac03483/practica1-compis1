@@ -7,11 +7,12 @@ import { BdEditorComponent } from './components/bd-editor/bd-editor.component';
 import { CodeEditorModule} from "@ngstack/code-editor";
 import { MiniSqlEditorComponent } from './components/mini-sql-editor/mini-sql-editor.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
     BdEditorComponent,
-    MiniSqlEditorComponent,
+    MiniSqlEditorComponent
   ],
   imports: [
     BrowserModule,

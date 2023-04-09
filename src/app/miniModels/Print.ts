@@ -18,7 +18,7 @@ export class Print extends Instruction{
       const operation = it.execute(symbolTable);
 
       if(!operation){
-        throw new Error(`Error Semántico. No se pudo ejecutar la operación. Linea: ${this.line} Columna: ${this.column}`);
+        throw new Error(` semántico. No se pudo ejecutar la operación. Linea: ${this.line} Columna: ${this.column}`);
       }
 
       printContent+= operation.value;

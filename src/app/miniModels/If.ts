@@ -24,11 +24,11 @@ export class If  extends Instruction{
     const operation = this.operation.execute(symbolTable);
 
     if(!operation){
-      throw new Error("No se ejecutó la operación");
+      throw new Error(` semántico. No se ejecutó la operación. Linea: ${this.line} Columna: ${this.column}`);
     }
 
     if(operation.variableType != VariableType.BOOLEAN){
-      throw new Error("La sentencia if debe contener un valor booleano.");
+      throw new Error(` semántico. La sentencia if debe contener un valor booleano. Linea: ${this.line} Columna: ${this.column}`);
     }
 
     if(operation.value == true){
