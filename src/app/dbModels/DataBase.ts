@@ -21,7 +21,7 @@ export class DataBase{
   }
 
   public addTable(table:Table){
-    const isInDB = this.tables.find(t => t.name = table.name);
+    const isInDB = this.tables.find(t => t.name == table.name);
     if(isInDB){
       throw new Error("Tabla con nombre ya existente.");
     }

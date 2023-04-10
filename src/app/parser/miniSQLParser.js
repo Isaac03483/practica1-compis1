@@ -183,7 +183,7 @@ break;
 case 42: case 85:
 this.$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.GREATER_THAN, $$[$0-2],$$[$0]);
 break;
-case 43: case 86:
+case 43: case 86: case 87:
 this.$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.LESS_EQUALS, $$[$0-2],$$[$0]);
 break;
 case 44:

@@ -469,6 +469,7 @@ k
   {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.LESS_EQUALS, $1,$3);}
 
   | k GREATER_EQUALS m
+  {$$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.LESS_EQUALS, $1,$3);}
   | m
   {$$=$1;}
   ;

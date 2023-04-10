@@ -3,6 +3,7 @@ import {CodeModel} from "@ngstack/code-editor";
 import {DbParser} from "../../parser/dbParser";
 import {Table} from "../../dbModels/Table";
 import {DataBase} from "../../dbModels/DataBase";
+import {VariableType} from "../../miniModels/Variable";
 
 @Component({
   selector: 'app-bd-editor',
@@ -40,4 +41,7 @@ export class BdEditorComponent implements OnInit{
   ngOnInit(): void {
 
   }
+
+  protected readonly DataBase = DataBase;
+  protected readonly VariableType = VariableType;
 }
