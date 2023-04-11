@@ -14,6 +14,7 @@ import {OperationType} from "../miniModels/OperationType";
 import {SymbolTable} from "../miniModels/SymbolTable";
 import {MiniError} from "../miniModels/MiniError";
 import {Select} from "../miniModels/Select";
+import {QueriesSingleton} from "../miniModels/QueryResult";
 
 declare var miniSQLParser: any;
 export class MiniSQLParser{
@@ -25,6 +26,7 @@ export class MiniSQLParser{
   constructor(source: string) {
     this.source = source;
     MiniError.getInstance().clear();
+    QueriesSingleton.getInstance().clear();
     miniSQLParser.yy.Value = Value;
     miniSQLParser.yy.ValueType = ValueType;
     miniSQLParser.yy.VariableType = VariableType;

@@ -162,7 +162,7 @@ break;
 case 33: case 76:
 this.$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.OR, $$[$0-2],$$[$0]);
 break;
-case 34: case 36: case 38: case 45: case 46: case 66: case 69: case 71: case 89: case 101:
+case 34: case 36: case 38: case 45: case 46: case 61: case 66: case 69: case 71: case 89: case 101:
 this.$ = $$[$0];
 break;
 case 35: case 78:
@@ -198,8 +198,17 @@ break;
 case 49: case 92:
 this.$ = new yy.Value(this._$.first_line, this._$.first_column, yy.ValueType.BOOLEAN, false);
 break;
-case 50: case 51: case 52: case 53:
-this.$ = new yy.Select();
+case 50:
+this.$ = new yy.Select(this._$.first_line, this._$.first_column,$$[$0-2],$$[$0]);
+break;
+case 51: case 52: case 53:
+this.$ = new yy.Select(this._$.first_line, this._$.first_column,$$[$0-3],$$[$0-1]);
+break;
+case 60: case 63:
+this.$=[]; this.$.push($$[$0]);
+break;
+case 62:
+this.$=$$[$0-2]; this.$.push($$[$0]);
 break;
 case 64: case 94:
 this.$ = new yy.BinaryOperation(this._$.first_line, this._$.first_column, yy.OperationType.PLUS, $$[$0-2],$$[$0]);

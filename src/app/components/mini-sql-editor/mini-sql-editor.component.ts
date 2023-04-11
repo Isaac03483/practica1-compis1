@@ -5,6 +5,7 @@ import {SymbolTable} from "../../miniModels/SymbolTable";
 import {MiniError} from "../../miniModels/MiniError";
 import {VariableType} from "../../miniModels/Variable";
 import * as d3 from 'd3';
+import {QueriesSingleton} from "../../miniModels/QueryResult";
 
 @Component({
   selector: 'app-mini-sql-editor',
@@ -50,5 +51,5 @@ export class MiniSqlEditorComponent implements OnInit{
   }
 
 
-
+  protected readonly QueriesSingleton = QueriesSingleton;
 }

@@ -15,6 +15,7 @@
 </div>
 
 <div *ngIf="symbolTable && MiniError.getInstance().errors.length == 0">
+  <h4>Tabla de simbolos</h4>
   <table class="table">
     <tr>
       <th scope="col">Id</th>
@@ -34,3 +35,20 @@
     <h5>{{error}}</h5>
   </div>
 </div>
+
+<div class="container" *ngIf="QueriesSingleton.getInstance()">
+  <div *ngFor="let query of QueriesSingleton.getInstance().queries">
+    <div>
+      <h4>{{query.query}}</h4>
+      <table class="table">
+        <tr>
+          <th *ngFor="let property of query.table.properties">{{property.propertyName}}</th>
+        </tr>
+        <tr *ngFor="let row of query.table.rows">
+          <td *ngFor="let attribute of row.row">{{attribute.value}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+

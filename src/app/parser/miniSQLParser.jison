@@ -344,15 +344,15 @@ h
 
 selectStatement
   : SELECT properties FROM NAME
-  {$$ = new yy.Select();}
+  {$$ = new yy.Select(this._$.first_line, this._$.first_column,$2,$4);}
   | SELECT properties FROM NAME whereProd
-  {$$ = new yy.Select();}
+  {$$ = new yy.Select(this._$.first_line, this._$.first_column,$2,$4);}
 
   | SELECT properties FROM NAME limitProd
-  {$$ = new yy.Select();}
+  {$$ = new yy.Select(this._$.first_line, this._$.first_column,$2,$4);}
 
   | SELECT properties FROM NAME offSetProd
-  {$$ = new yy.Select();}
+  {$$ = new yy.Select(this._$.first_line, this._$.first_column,$2,$4);}
 
   ;
 
@@ -374,12 +374,18 @@ offSetProd
 
 properties
   : TIMES
+  {$$=[]; $$.push($1);}
+
   | propertyNames
+  {$$ = $1;}
   ;
 
 propertyNames
   : propertyNames COMMA NAME
+  {$$=$1; $$.push($3);}
+
   | NAME
+  {$$=[]; $$.push($1);}
   ;
 
 number
